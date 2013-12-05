@@ -1,0 +1,10 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    msgpack (0.5.7)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  msgpack
