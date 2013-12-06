@@ -23,6 +23,10 @@ class HolePunching::Peer
         self._id(payload['id'])
       when 'peers_info'
         self._peers_info(payload)
+      when 'connect'
+        self._connect
+      when 'connect_reply'
+        self._connect_reply
     end
   end
 
@@ -39,6 +43,27 @@ class HolePunching::Peer
   def self._peers_info(peers)
     puts "[PEERS] RELOAD"
     @@peers = peers
+  end
+
+  def self.peers_connect
+    Thread.new do
+      loop do
+        @@peers.each do |peer|
+          addr = Socket.sockaddr_in(peer['port'], peer['ip'])
+          @@socket[0].sendmsg({func: :connect, id: @@id}.to_msgpack, 0, addr)
+        end
+        sleep 15
+      end
+    end
+  end
+
+  def self._connect
+    puts "[CONNECT]"
+    ['connect_reply', {:id => @@id}]
+  end
+
+  def self._connect_reply
+    puts "[CONNECT REPLY]"
   end
 
   def self.listen
